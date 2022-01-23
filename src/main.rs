@@ -26,7 +26,7 @@ struct Block {
     hash: String,
     nonce: usize,
     transactions: Transaction,  //168
-    timestamp: DateTime<Local>, //DateTime<Utc>
+    timestamp: DateTime<Utc>, //DateTime<Utc>
 }
 #[derive(Debug, Serialize, Deserialize)]
 struct Chain {
@@ -67,7 +67,7 @@ impl Blocks for Transaction {
                     recipient: String::from("yato"),
                     amount: 0,
                 },
-                timestamp: Local::now(), //Utc::now(),
+                timestamp: Utc::now(), //Local::now(),
             });
         }
 
@@ -80,7 +80,7 @@ impl Blocks for Transaction {
                 recipient: self.recipient.clone(),
                 amount: self.amount,
             },
-            timestamp: Local::now(), //Utc::now(),
+            timestamp: Utc::now(), //Local::now(),
         };
 
         chain.push(block.clone());
@@ -123,7 +123,7 @@ impl Blocks for Transaction {
 
             let result: String = sha256.result_str();
 
-            if result.starts_with("0000000") == true /*&& result.ends_with("") == true*/ {
+            if result.starts_with("00000") == true /*&& result.ends_with("") == true*/ {
                 println!("{:?}", result);
                 println!("{:?}", count);
                 let end = start.elapsed();
@@ -139,6 +139,10 @@ impl Blocks for Transaction {
 }
 
 fn main() {
+
+    println!("------Start------");
+
+
     let mut chain: Vec<Block> = Vec::new();
 
     let block1 = Transaction {
@@ -168,8 +172,12 @@ fn main() {
     println!("{:?}", chain);
     //println!("{:?}",chain.save().unwrap());
 
-    chain.save().unwrap()
+    chain.save().unwrap();
     //println!("{:?}",Local::now())
 
     //println!("{:?}",serde_json::to_string(&Transaction{sender: String::from("x64neco"),recipient: String::from("yato"),amount: 1200}).unwrap())
+
+    loop{
+
+    }
 }
