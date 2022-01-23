@@ -135,7 +135,7 @@ impl Blocks for Transaction {
 
             let result: String = sha512.result_str();
 
-            if result.starts_with("0000") == true
+            if result.starts_with("00000000") == true
             /*&& result.ends_with("") == true*/
             {
                 println!("{:?}", input);
@@ -187,19 +187,60 @@ fn inspection() {
     let json: serde_json::Value =
         serde_json::from_str(&file).expect("JSON was not well-formatted");
 
-    let jsons = json.as_array().unwrap().clone();
+    let jsons = json.as_array().unwrap().clone();//clone()使うあたりまだまだなって思う
     let mut chain: Vec<Block> = Vec::new();
 
     //let deserialized: InspeBlock = serde_json::from_str(&file).unwrap();
     //let deserialized: Tes = serde_json::from_reader(reader).unwrap();
 
-    for i in jsons {
+    for blocks in jsons {
 
-        let block:Block = serde_json::from_value(i).unwrap();
+        let block:Block = serde_json::from_value(blocks).unwrap();
         chain.push(block);
     }
 
-    println!("{:?}",chain)
+
+    for i in 0..chain.len() - 1{
+
+        let index0: String = chain[i].index.to_string();
+        let timestamp0: String = chain[i].timestamp.to_string();
+        let hash0: String = chain[i].hash.to_string();
+        let hash02: String = chain[i + 1].hash2.to_string();
+        let nonce: usize = chain[i + 1].nonce;
+        let transactions0: String = serde_json::to_string(&chain[i].transactions).unwrap();
+        let input0: String = index0 + &timestamp0 + &hash0 + &transactions0;
+
+        let nonce1: usize = chain[i + 1].nonce;
+
+        
+
+        let mut sha512_0 = Sha512::new();
+        let mut sha512_1 = Sha512::new();
+
+
+        sha512_0.input_str(&input0);
+        
+
+        let hashmoto = sha512_0.result_str() + &nonce1.to_string();
+        sha512_1.input_str(&hashmoto);
+        println!("{}",hash02);
+        println!("{}",sha512_1.result_str());
+        println!("{}",nonce);
+
+
+        if hash02 == sha512_1.result_str() {
+            println!("True");
+        }else{
+            println!("Fasle");
+        }
+
+        
+
+        //sha512.result_str()
+
+    }
+
+    //println!("{:?}",chain[1])
 
     
 }
