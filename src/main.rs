@@ -3,7 +3,7 @@ mod models;
 use models::PostJson::{PostTransaction};
 use actix_web::{get,post,web,App,HttpResponse,HttpServer,Responder};
 use crate::models::block::{Block,Transaction};
-use crate::blockchain::blockchai::{Blocks};
+use crate::blockchain::blockchain::{Blocks};
 use std::thread;
 use std::time::Duration;
 
@@ -39,7 +39,7 @@ async fn post_index(user: web::Json<PostTransaction>)->impl Responder{
     //println!("{:?}",tmpdata.create_block(&mut chain));
 
     thread::spawn(move ||{
-        println!("{:?}",tmpdata.create_block(&mut chain));
+        tmpdata.create_block(&mut chain);
     });
     
 
